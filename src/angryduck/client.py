@@ -27,7 +27,7 @@ class AngryDuckClient(Client):
     #     self.__delete_message_with_links(message)
 
     async def on_raw_reaction_add(self, payload: RawReactionActionEvent):
-        if payload.message_id == VERIFICATION_MESSAGE_ID and payload.channel_id == VERIFICATION_CHANNEL_ID and payload.emoji == DUCK_EMOJI:
+        if payload.message_id == VERIFICATION_MESSAGE_ID and payload.channel_id == VERIFICATION_CHANNEL_ID and payload.emoji.name == DUCK_EMOJI:
             await payload.member.add_roles(Object(id=VERIFIED_ROLE_ID), reason="Automatic ducky verification.")
 
     async def on_error(self, event_method, *args, **kwargs):
