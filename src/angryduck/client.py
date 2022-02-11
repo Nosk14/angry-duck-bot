@@ -1,5 +1,5 @@
 from discord import Client, RawReactionActionEvent, RawMessageUpdateEvent, Object
-from logging import Logger
+import logging
 
 VERIFICATION_MESSAGE_ID = 938516475113791558
 VERIFICATION_CHANNEL_ID = 938352874168127529
@@ -10,9 +10,11 @@ DUCK_EMOJI = "🦆"
 
 class AngryDuckClient(Client):
 
-    def __init__(self, logger: Logger, **options):
+    def __init__(self, logger: logging.Logger, **options):
         super().__init__(**options)
         self.logger = logger
+        logging.getLogger('discord.gateway').setLevel(logging.WARNING)
+        logging.getLogger('discord.client').setLevel(logging.WARNING)
 
     async def on_ready(self):
         self.logger.info("Angry Duck up and running!")
