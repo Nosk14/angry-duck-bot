@@ -1,4 +1,5 @@
 from discord import Client, RawReactionActionEvent, RawMessageUpdateEvent, Object
+from rules import VerifyUserRule
 import logging
 
 VERIFICATION_MESSAGE_ID = 938516475113791558
@@ -15,6 +16,10 @@ class AngryDuckClient(Client):
         self.logger = logger
         logging.getLogger('discord.gateway').setLevel(logging.WARNING)
         logging.getLogger('discord.client').setLevel(logging.WARNING)
+        self.__set_up_rules()
+
+    def __set_up_rules(self):
+        self.verification_rule = VerifyUserRule()
 
     async def on_ready(self):
         self.logger.info("Angry Duck up and running!")
@@ -29,8 +34,7 @@ class AngryDuckClient(Client):
     #     self.__delete_message_with_links(message)
 
     async def on_raw_reaction_add(self, payload: RawReactionActionEvent):
-        if payload.message_id == VERIFICATION_MESSAGE_ID and payload.channel_id == VERIFICATION_CHANNEL_ID and payload.emoji.name == DUCK_EMOJI:
-            await payload.member.add_roles(Object(id=VERIFIED_ROLE_ID), reason="Automatic ducky verification.")
+        self.verification_rule.apply(payload.message_id, payload.channel_id, payload.emoji.name, payload.member)
 
     async def on_error(self, event_method, *args, **kwargs):
         self.logger.error(f"Error during {event_method}: [{args}] [{kwargs}]")
