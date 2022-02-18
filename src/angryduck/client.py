@@ -19,8 +19,8 @@ class AngryDuckClient(Client):
         self.__set_up_rules()
 
     def __set_up_rules(self):
-        self.verification_rule = VerifyUserRule()
-        self.remove_messages_with_links_rule = RemoveNonVerifiedMessagesWithLinksRule()
+        self.verification_rule = VerifyUserRule(self.logger)
+        self.remove_messages_with_links_rule = RemoveNonVerifiedMessagesWithLinksRule(self.logger)
 
     async def on_ready(self):
         self.logger.info("Angry Duck up and running!")

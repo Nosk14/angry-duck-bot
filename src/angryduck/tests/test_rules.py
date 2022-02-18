@@ -2,6 +2,7 @@ from unittest import TestCase, IsolatedAsyncioTestCase
 from unittest.mock import MagicMock, AsyncMock, patch
 from rules import VerifyUserRule, RemoveNonVerifiedMessagesWithLinksRule
 import discord
+import logging
 import aiohttp
 
 
@@ -12,7 +13,9 @@ class TestVerifyUserRule(IsolatedAsyncioTestCase):
     DUCK_EMOJI = "🦆"
 
     def setUp(self):
-        self.rule = VerifyUserRule()
+        logger = logging.getLogger()
+        logger.setLevel(logging.INFO)
+        self.rule = VerifyUserRule(logger)
 
     @patch('discord.Member')
     async def test_apply_role(self, member):
@@ -69,7 +72,9 @@ class TestRemoveNonVerifiedMessagesWithLinksRule(IsolatedAsyncioTestCase):
     VERIFIED_ROLE_ID = 938353848026812416
 
     def setUp(self):
-        self.rule = RemoveNonVerifiedMessagesWithLinksRule()
+        logger = logging.getLogger()
+        logger.setLevel(logging.INFO)
+        self.rule = RemoveNonVerifiedMessagesWithLinksRule(logger)
 
     @patch('discord.Member')
     @patch('discord.Message')

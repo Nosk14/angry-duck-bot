@@ -9,22 +9,29 @@ class VerifyUserRule:
     VERIFIED_ROLE_ID = 938353848026812416
     DUCK_EMOJI = "🦆"
 
+    def __init__(self, logger):
+        self.logger = logger
+
     async def apply(self, message_id, channel_id, emoji_name, member: Member):
         if message_id == VerifyUserRule.VERIFICATION_MESSAGE_ID \
                 and channel_id == VerifyUserRule.VERIFICATION_CHANNEL_ID \
                 and emoji_name == VerifyUserRule.DUCK_EMOJI:
             await member.add_roles(Object(id=VerifyUserRule.VERIFIED_ROLE_ID), reason="Automatic ducky verification.")
-            logging.info(f"User {member.display_name} has been verified.")
+            self.logger.info(f"[{self.__class__.__name__}] User {member} has been verified.")
 
 
 class RemoveNonVerifiedMessagesWithLinksRule:
+
+    def __init__(self, logger):
+        self.logger = logger
 
     async def apply(self, member: Member, message: Message):
         if not self.__has_verified_role(member) and self.__contents_any_link(message):
             try:
                 await message.delete()
+                logging.info(f"[{self.__class__.__name__}] Deleted message from {message.author}")
             except discord.NotFound:
-                logging.warning(f"Message not found trying to remove non-verified message with links.")
+                self.logger.warning(f"[{self.__class__.__name__}] Message not found trying to remove it.")
 
     def __contents_any_link(self, message: Message):
         return 'http://' in message.content or 'https://' in message.content
