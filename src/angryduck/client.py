@@ -1,5 +1,5 @@
-from discord import Client, RawReactionActionEvent, Message, RawMessageUpdateEvent, Object
-from rules import VerifyUserRule, RemoveNonVerifiedMessagesWithLinksRule
+from discord import Client, RawReactionActionEvent, Message
+from angryduck.rules import VerifyUserRule, RemoveNonVerifiedMessagesWithLinksRule
 import logging
 
 VERIFICATION_MESSAGE_ID = 938516475113791558
